@@ -2,16 +2,32 @@ import re
 import requests
 
 def check_string(password):
-    pattern = pattern = r"^(?=\S{8,15}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_\-+=])[A-Za-z\d!@#$%^&*()_\-+=]+$"
-    a = re.findall(pattern, password)
-    print("Found matches:",a)
-    return a
+    pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?!.*\s).{8,15}$"
+    passwords = password.split()
+
+    valid_passwords = []
+
+    for password in passwords:
+        if re.match(pattern, password):
+            valid_passwords.append(password)
+
+    if not valid_passwords:
+        return f"Пароли не найдены"
+    return f"Все найденные пароли: {valid_passwords}"
+
 
 def check_file(path):
+    valid_passwords = []
+    pattern = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?!.*\s).{8,15}$"
     try:
         with open(path, encoding="utf-8") as file:
-            s = file.read()
-            return check_string(s)
+            for line in file:
+                password = line.strip()
+                if re.match(pattern, password):
+                    valid_passwords.append(password)
+            if not valid_passwords:
+                return f"Пароли не найдены"
+            return f"Все найденные пароли: {valid_passwords}"
     except Exception as e:
         return f"Ошибка открытия файла: {e}"
 
@@ -24,23 +40,3 @@ def check_url(url):
     except Exception as e:
         return f"Ошибка загрузки страницы: {e}"
 
-def main():
-    print("Выберите действие:")
-    print("1. Проверить пароль")
-    print("2. Проверить файл")
-    print("3. Проверить URL")
-    choice = input("Введите номер действия: ")
-    if choice == "1":
-        password = input("Введите пароль: ")
-        print("Пароль надёжный" if check_string(password) else "Пароль ненадёжный")
-    elif choice == "2":
-        file_path = input("Введите путь к файлу: ")
-        print("Найденные надёжные пароли:", check_file(file_path))
-    elif choice == "3":
-        url = input("Введите URL: ")
-        print("Найденные надёжные пароли:", check_url(url))
-    else:
-        print("Неверный выбор. Завершение программы.")
-
-if __name__ == "__main__":
-    main()
