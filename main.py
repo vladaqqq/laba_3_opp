@@ -40,3 +40,25 @@ def check_url(url):
     except Exception as e:
         return f"Ошибка загрузки страницы: {e}"
 
+
+def main():
+    print("Выберите действие:")
+    print("1. Проверить пароль")
+    print("2. Проверить файл")
+    print("3. Проверить URL")
+    choice = input("Введите номер действия: ")
+    if choice == "1":
+        password = input("Введите пароль: ")
+        print(check_string(password))
+    elif choice == "2":
+        file_path = input("Введите путь к файлу: ")
+        print(check_file(file_path))
+    elif choice == "3":
+        url = input("Введите URL: ")
+        print(check_url(url))
+    else:
+        print("Неверный выбор. Завершение программы.")
+
+
+if __name__ == "__main__":
+    main()
